@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Відділення Нової пошти</title>
+</head>
+<body>
+  <h1>Пошук відділень Нової пошти</h1>
+
+  <input id="cityInput" placeholder="Введіть місто, наприклад Київ">
+  <button onclick="searchWarehouses()">Пошук</button>
+
+  <ul id="result"></ul>
+
+  <script>
+    async function searchWarehouses() {
+      const city = document.getElementById("cityInput").value;
+      const result = document.getElementById("result");
+
+      result.innerHTML = "Завантаження...";
+
+      const response = await fetch(`/api/warehouses?city=${encodeURIComponent(city)}`);
+      const data = await response.json();
+
+      result.innerHTML = "";
+
+      if (data.error) {
+        result.innerHTML = `<li>${data.error}</li>`;
+        return;
+      }
+
+      data.forEach(warehouse => {
+        const li = document.createElement("li");
+        li.textContent = `${warehouse.Description} — ${warehouse.ShortAddress}`;
+        result.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
